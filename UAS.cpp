@@ -175,3 +175,76 @@ void addProdNode(ProductNode **pHeadProd, char productNameInput[50], int distanc
         pProdNodeNew->next = pProdNodeCur;
     }
 }
+
+void addProdtoBatch(QueueBatch *pQueueBatch)
+{
+    system("cls");
+    QueueBatch queueBatchObj = *pQueueBatch;
+    BatchNode *pBatchNodeFront;
+    BatchNode *pBatchNodeNew;
+    BatchNode *pBatchNodeWalk, *pBatchNodeLast;
+    ProductNode *pProdNodeNew;
+    char productNameInput[50];
+    int distanceInput;
+    // jumlah maximal produk dalam batch
+    int maxQuotaBatch = 2;
+    // input informasi barang
+    printf("\nMasukkan Nama Barang : ");
+    scanf(" %49[^\n]s ", productNameInput);
+    printf("Masukkan Jarak Pengantaran Barang (KM): ");
+    scanf("%d", &distanceInput);
+    // Make new Product Node
+    // ProductNode data structure = LinkedList
+    pProdNodeNew = (ProductNode *)malloc(sizeof(ProductNode));
+    // fill the ProductNode {name,distance,next} data
+    // Inisiasi pada productnode yang baru
+    pProdNodeNew->distance = distanceInput;
+    strcpy(pProdNodeNew->productName, productNameInput);
+    pProdNodeNew->next = NULL;
+    // kondisi QueueBatch masih kosong
+    if (queueBatchObj.count == 0)
+    {
+        // Membuat batch baru
+        pBatchNodeNew = (BatchNode *)malloc(sizeof(BatchNode));
+        //  update data batch
+        pBatchNodeNew->pHeadProd = pProdNodeNew;
+        pBatchNodeNew->next = NULL;
+        // satu batch memilki beberapa node product
+        pBatchNodeNew->count = 1;
+        // struktur data batch = Queue
+        // update data Batch Queue
+        queueBatchObj.rear = pBatchNodeNew;
+        queueBatchObj.front = pBatchNodeNew;
+        queueBatchObj.count = 1;
+        *pQueueBatch = queueBatchObj;
+    }
+    // Kondisi batch sudah dibuat || sudah ada data di dalamnya
+    else
+    {
+        pBatchNodeLast = queueBatchObj.rear;
+        // Kondisi batch belum terisi penuh
+        if (pBatchNodeLast->count < maxQuotaBatch)
+        {
+            addProdNode(&pBatchNodeLast->pHeadProd, productNameInput, distanceInput);
+            pBatchNodeLast->count++;
+        }
+        // Kondisi batch telah terisi penuh -> membuat batch baru
+        else
+        {
+            // membuat node batch baru
+            pBatchNodeNew = (BatchNode *)malloc(sizeof(BatchNode));
+            pBatchNodeWalk = queueBatchObj.front;
+            // mencari batch terakhir
+            // set Queue batch
+            pBatchNodeLast = queueBatchObj.rear;
+            pBatchNodeLast->next = pBatchNodeNew;
+            queueBatchObj.rear = pBatchNodeNew;
+            queueBatchObj.count++;
+            *pQueueBatch = queueBatchObj;
+            // inisiasi data pada batch baru
+            pBatchNodeNew->pHeadProd = pProdNodeNew;
+            pBatchNodeNew->next = NULL;
+            pBatchNodeNew->count = 1;
+        }
+    }
+}
