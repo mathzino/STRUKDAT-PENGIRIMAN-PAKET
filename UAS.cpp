@@ -45,6 +45,8 @@ void sendCust(StackDeliv *pStackDeliv, ProductNode **pHistoryHead, QueueBatch *p
 void showHistoryDeliver(ProductNode **pHistoryHead);
 void showStatusProduct();
 
+
+
 int main()
 {
     char selectMenu;
@@ -251,13 +253,12 @@ void addProdtoBatch(QueueBatch *pQueueBatch)
 
 void delivFail(QueueBatch *pQueueBatch, char productNameInput[50], int distanceInput)
 {
- 
+
     QueueBatch queueBatchObj = *pQueueBatch;
     BatchNode *pBatchNodeFront;
     BatchNode *pBatchNodeNew;
     BatchNode *pBatchNodeWalk, *pBatchNodeLast;
     ProductNode *pProdNodeNew;
-    StatusNode *pStatusHead;
     // jumlah maximal produk dalam batch
     int maxQuotaBatch = 2;
     // Make new Product Node
@@ -268,7 +269,6 @@ void delivFail(QueueBatch *pQueueBatch, char productNameInput[50], int distanceI
     pProdNodeNew->distance = distanceInput;
     strcpy(pProdNodeNew->productName, productNameInput);
     pProdNodeNew->next = NULL;
-    pProdNodeNew->pStatusHead = NULL;
     // kondisi QueueBatch masih kosong
     if (queueBatchObj.count == 0)
     {
@@ -316,7 +316,7 @@ void delivFail(QueueBatch *pQueueBatch, char productNameInput[50], int distanceI
         }
     }
 }
- 
+
 void showBatch(QueueBatch *pQueueBatch)
 {
     system("cls");
@@ -349,10 +349,10 @@ void showBatch(QueueBatch *pQueueBatch)
             pBatchNodeCur = pBatchNodeCur->next;
         }
     }
- 
+
     getch();
 }
- 
+
 void showStackDeliv(StackDeliv *pStackDeliv)
 {
     system("cls");
@@ -378,3 +378,99 @@ void showStackDeliv(StackDeliv *pStackDeliv)
     getch();
 }
 
+void sendBatch(QueueBatch *pQueueBatch, StackDeliv *pStackDeliv)
+{
+    // ProductNode * pProductWalk = pQueueBatch->front->pHeadProd;
+    // KONDISI TERDAPAT BATCH
+    if (pQueueBatch->count > 0)
+    {
+        // MEMINDAHKAN BATCH KE STACK PENGIRIMAN
+        pStackDeliv->top = pQueueBatch->front->pHeadProd;
+        pStackDeliv->count = pQueueBatch->front->count;
+        pQueueBatch->front = pQueueBatch->front->next;
+        pQueueBatch->count--;
+    }
+    // KONDISI BELUM ADA BATCH PRODUK SAMA SEKALI
+    else
+    {
+        cout << "belum ada batch sama sekali";
+        getch();
+    }
+}
+
+void sendCust(StackDeliv *pStackDeliv, ProductNode **pHistoryHead, QueueBatch *pQueueBatch)
+{
+    ProductNode *pProductNodeCur, *pHistoryNew, *pProdFailDeliv;
+    pHistoryNew = *pHistoryHead;
+    char isSuccess;
+    // KONDISI STACK SUDAH MEMILIKI DATA
+    if (pStackDeliv->count != 0)
+    {
+        // CEK PRODUK BERHASIL DIKIRIM
+        printf("Produk di terima pembeli('y'/'Y') : ");
+        scanf(" %c", &isSuccess);
+        if (isSuccess == 'y' || isSuccess == 'Y')
+        {
+            // KONDISI HISTORY MASIH BELUM MEMILIKI DATA
+            // MEMINDAHKAN DATA PROD DARI STACK PENGIRIMAN KE HISTORY PRODUK YANG TELAH DIKIRIMKAN
+            if (*pHistoryHead == NULL)
+            {
+                pHistoryNew = pStackDeliv->top;
+                pStackDeliv->top = pStackDeliv->top->next;
+                pHistoryNew->next = NULL;
+                *pHistoryHead = pHistoryNew;
+            }
+            // KONDISI HISTORY SUDAH MEMILIKI DATA DI DALAMNYA
+            else
+            {
+                ProductNode *pHistoryWalk = *pHistoryHead;
+                while (pHistoryWalk->next != NULL)
+                {
+                    pHistoryWalk = pHistoryWalk->next;
+                }
+                pHistoryWalk->next = pStackDeliv->top;
+                pStackDeliv->top = pStackDeliv->top->next;
+                pHistoryWalk->next->next = NULL;
+            }
+            pStackDeliv->count--;
+        }
+        else
+        {
+            pProdFailDeliv = pStackDeliv->top;
+            pStackDeliv->top=pStackDeliv->top->next;
+            delivFail(pQueueBatch, pProdFailDeliv->productName, pProdFailDeliv->distance);
+            printf("PRODUK DIMASUKKAN KE DALAM BATCH PENGIRIMAN\n");
+            getch();
+        }
+    }
+    else
+    {
+        printf("STACK PENGIRIMAN MASIH KOSONG");
+        getch();
+    }
+}
+
+void showHistoryDeliver(ProductNode **pHistoryHead)
+{
+    system("cls");
+    ProductNode *pHistoryWalk = *pHistoryHead;
+    if (pHistoryWalk == NULL)
+    {
+        cout << "BELUM ADA PENGIRIMAN YANG SUKSES ";
+    }
+    else
+    {
+        cout << "PRODUK YANG BERHASIL DIKIRIM\n\n";
+        while (pHistoryWalk != NULL)
+        {
+            cout << "\t==========================\n";
+            cout << "\tKode Barang :" << pHistoryWalk << "\n";
+            cout << "\tNama Barang :" << pHistoryWalk->productName << "\n";
+            cout << "\tJarak Pengiriman :" << pHistoryWalk->distance << " KM\n";
+            cout << "\t==========================\n";
+            pHistoryWalk = pHistoryWalk->next;
+        }
+    }
+
+    getch();
+}
