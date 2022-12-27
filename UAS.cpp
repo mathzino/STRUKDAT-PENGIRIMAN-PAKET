@@ -248,3 +248,133 @@ void addProdtoBatch(QueueBatch *pQueueBatch)
         }
     }
 }
+
+void delivFail(QueueBatch *pQueueBatch, char productNameInput[50], int distanceInput)
+{
+ 
+    QueueBatch queueBatchObj = *pQueueBatch;
+    BatchNode *pBatchNodeFront;
+    BatchNode *pBatchNodeNew;
+    BatchNode *pBatchNodeWalk, *pBatchNodeLast;
+    ProductNode *pProdNodeNew;
+    StatusNode *pStatusHead;
+    // jumlah maximal produk dalam batch
+    int maxQuotaBatch = 2;
+    // Make new Product Node
+    // ProductNode data structure = LinkedList
+    pProdNodeNew = (ProductNode *)malloc(sizeof(ProductNode));
+    // fill the ProductNode {name,distance,next} data
+    // Inisiasi pada productnode yang baru
+    pProdNodeNew->distance = distanceInput;
+    strcpy(pProdNodeNew->productName, productNameInput);
+    pProdNodeNew->next = NULL;
+    pProdNodeNew->pStatusHead = NULL;
+    // kondisi QueueBatch masih kosong
+    if (queueBatchObj.count == 0)
+    {
+        // Membuat batch baru
+        pBatchNodeNew = (BatchNode *)malloc(sizeof(BatchNode));
+        //  update data batch
+        pBatchNodeNew->pHeadProd = pProdNodeNew;
+        pBatchNodeNew->next = NULL;
+        // satu batch memilki beberapa node product
+        pBatchNodeNew->count = 1;
+        // struktur data batch = Queue
+        // update data Batch Queue
+        queueBatchObj.rear = pBatchNodeNew;
+        queueBatchObj.front = pBatchNodeNew;
+        queueBatchObj.count = 1;
+        *pQueueBatch = queueBatchObj;
+    }
+    // Kondisi batch sudah dibuat || sudah ada data di dalamnya
+    else
+    {
+        pBatchNodeLast = queueBatchObj.rear;
+        // Kondisi batch belum terisi penuh
+        if (pBatchNodeLast->count < maxQuotaBatch)
+        {
+            addProdNode(&pBatchNodeLast->pHeadProd, productNameInput, distanceInput);
+            pBatchNodeLast->count++;
+        }
+        // Kondisi batch telah terisi penuh -> membuat batch baru
+        else
+        {
+            // membuat node batch baru
+            pBatchNodeNew = (BatchNode *)malloc(sizeof(BatchNode));
+            pBatchNodeWalk = queueBatchObj.front;
+            // mencari batch terakhir
+            // set Queue batch
+            pBatchNodeLast = queueBatchObj.rear;
+            pBatchNodeLast->next = pBatchNodeNew;
+            queueBatchObj.rear = pBatchNodeNew;
+            queueBatchObj.count++;
+            *pQueueBatch = queueBatchObj;
+            // inisiasi data pada batch baru
+            pBatchNodeNew->pHeadProd = pProdNodeNew;
+            pBatchNodeNew->next = NULL;
+            pBatchNodeNew->count = 1;
+        }
+    }
+}
+ 
+void showBatch(QueueBatch *pQueueBatch)
+{
+    system("cls");
+    QueueBatch queueBatch = *pQueueBatch;
+    BatchNode *pBatchNodeCur = queueBatch.front;
+    int i = 0;
+    // kondisi batch kosong
+    if (pQueueBatch->count == 0)
+    {
+        cout << " BATCH PENGIRIMAN KOSONG ";
+    }
+    // kondisi batch memiliki data
+    else
+    {
+        cout << "BATCH PENGIRIMAN :";
+        while (pBatchNodeCur != NULL)
+        {
+            cout << "\n\nkode batch ke " << ++i << ": " << pBatchNodeCur << "\n\n";
+            ProductNode *pProductNodeHead = pBatchNodeCur->pHeadProd;
+            ProductNode *pProdNodeWalk = pProductNodeHead;
+            while (pProdNodeWalk != NULL)
+            {
+                cout << "\t==========================\n";
+                cout << "\tNama Barang :" << pProdNodeWalk->productName << "\n";
+                cout << "\tKode Barang :" << pProdNodeWalk << "\n";
+                cout << "\tJarak Pengiriman :" << pProdNodeWalk->distance << " KM\n";
+                cout << "\t==========================\n";
+                pProdNodeWalk = pProdNodeWalk->next;
+            }
+            pBatchNodeCur = pBatchNodeCur->next;
+        }
+    }
+ 
+    getch();
+}
+ 
+void showStackDeliv(StackDeliv *pStackDeliv)
+{
+    system("cls");
+    ProductNode *pProdNodeWalk = pStackDeliv->top;
+    int i = 0;
+    if (pStackDeliv->count == 0)
+    {
+        cout << " STACK PENGIRIMAN KOSONG ";
+    }
+    else
+    {
+        cout << "STACK PENGIRIMAN : \n\n";
+        while (pProdNodeWalk != NULL)
+        {
+            cout << "\t==========================\n";
+            cout << "\tNama Barang :" << pProdNodeWalk->productName << "\n";
+            cout << "\tKode Barang :" << pProdNodeWalk << "\n";
+            cout << "\tJarak Pengiriman :" << pProdNodeWalk->distance << " KM\n";
+            cout << "\t==========================\n";
+            pProdNodeWalk = pProdNodeWalk->next;
+        }
+    }
+    getch();
+}
+
