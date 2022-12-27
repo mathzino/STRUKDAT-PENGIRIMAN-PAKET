@@ -45,8 +45,6 @@ void sendCust(StackDeliv *pStackDeliv, ProductNode **pHistoryHead, QueueBatch *p
 void showHistoryDeliver(ProductNode **pHistoryHead);
 void showStatusProduct();
 
-
-
 int main()
 {
     char selectMenu;
