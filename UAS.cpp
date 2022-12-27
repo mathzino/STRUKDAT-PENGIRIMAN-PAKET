@@ -107,3 +107,73 @@ int main()
 
     } while (selectMenu != 'q');
 }
+
+QueueBatch createQueue()
+{
+    QueueBatch batch;
+    batch.count = 0;
+    batch.front = NULL;
+    batch.rear = NULL;
+    return batch;
+};
+
+StackDeliv createStack()
+{
+    StackDeliv stack;
+    stack.count = 0;
+    stack.top = NULL;
+    return stack;
+};
+
+void addProdNode(ProductNode **pHeadProd, char productNameInput[50], int distanceInput)
+{
+    ProductNode *pProdNodeCur = *pHeadProd;
+    ProductNode *pProdNodePre = pProdNodeCur;
+    ProductNode *pProdNodeNew = (ProductNode *)malloc(sizeof(ProductNode));
+
+    pProdNodeNew->distance = distanceInput;
+    strcpy(pProdNodeNew->productName, productNameInput);
+
+    while (pProdNodeCur->next != NULL && pProdNodeCur->distance <= distanceInput)
+    {
+        pProdNodePre = pProdNodeCur;
+        pProdNodeCur = pProdNodeCur->next;
+    }
+
+    // kondisi awal
+    if (pProdNodePre == pProdNodeCur)
+    {
+        if (pProdNodeCur->distance <= distanceInput)
+        {
+            pProdNodeNew->next = pProdNodeCur->next;
+            pProdNodeCur->next = pProdNodeNew;
+        }
+        else
+        {
+            *pHeadProd = pProdNodeNew;
+            pProdNodeNew->next = pProdNodeCur;
+        }
+    }
+    // condition for last node
+    // kondisi saat tidak ada kontainer selanjutnya
+    else if (pProdNodeCur->next == NULL)
+    {
+
+        if (pProdNodeCur->distance <= distanceInput)
+        {
+            pProdNodeCur->next = pProdNodeNew;
+            pProdNodeNew->next = NULL;
+        }
+        else
+        {
+            pProdNodePre->next = pProdNodeNew;
+            pProdNodeNew->next = pProdNodeCur;
+        }
+    }
+    // kondisi saat data_berat lebih ringan dari berat pCur (di tengah)
+    else
+    {
+        pProdNodePre->next = pProdNodeNew;
+        pProdNodeNew->next = pProdNodeCur;
+    }
+}
