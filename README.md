@@ -1,14 +1,14 @@
 # STRUKDAT-PENGIRIMAN-PAKET
 <div align="center">
-      <h1> <img src="https://media.istockphoto.com/id/1143391583/photo/business-trends-graphs-and-charts.jpg?b=1&s=170667a&w=0&k=20&c=nbNrdXq7zxdZEt6uD6qdzlIKIVxEGuhl7v40BefLSw8=" width="80px"><br/>PROGRAM PENGIRIMAN PAKET</h1>
+      <h1> <img src="https://media.istockphoto.com/id/1143391583/photo/business-trends-graphs-and-charts.jpg?b=1&s=170667a&w=0&k=20&c=nbNrdXq7zxdZEt6uD6qdzlIKIVxEGuhl7v40BefLSw8=" width="200px"><br/>PROGRAM PENGIRIMAN PAKET</h1>
      </div>
 
 # Anggota Kelompok :
-21081010072 - Alfi Ramadhaniar ( #SouthEast2) 
-21081010084 - Marchel Adias Pradana ( #Marchelp )
-21081010090 - Muhammad Fairus Ramadhani (#mathzino)
-21081010094 - Muhammad Baihaqi Arrisalah ( #1aris799)
-21081010100 - Wahyudi ( #99Wahyudi )
+1. 21081010072 - Alfi Ramadhaniar ( @SouthEast2) 
+2. 21081010084 - Marchel Adias Pradana ( @Marchelp )
+3. 21081010090 - Muhammad Fairus Ramadhani ( @mathzino )
+4. 21081010094 - Muhammad Baihaqi Arrisalah ( @1aris799 )
+5. 21081010100 - Wahyudi ( @99Wahyudi )
 
 # Description
 Program pengiriman paket ini memanfaatkan 3 jenis struktur data yaitu linkedlist, queue, dan stack
